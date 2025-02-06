@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -253,6 +254,7 @@ class ApiV1PostControllerTest {
 
 		@Test
 		@DisplayName("성공 - 글을 작성할 수 있다")
+		@WithUserDetails("user") // Spring Security에 사용되는 user를 적용시킬 수 있다
 		void writeA() throws Exception {
 			var apiKey = "user1";
 			var title = "새로운 글 제목";
