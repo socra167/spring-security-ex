@@ -79,20 +79,8 @@ public class ApiV1PostController {
 
 	@PostMapping
 	@Transactional
-	public RsData<PostWithContnetDto> write(
-		@RequestBody @Valid WriteReqBody body,
-		@AuthenticationPrincipal UserDetails principal
-	) {
-		// Principal principal = SecurityContextHolder.getContext().getAuthentication(); // principal로 username을 얻을 수 있다
-		if (principal == null) {
-			throw new ServiceException("401-1", "로그인이 필요합니다.");
-		}
-
-		// String username = principal.getName();
-		String username = principal.getUsername();
-		Member actor = memberService.findByUsername(username).get();
-
-		// Member actor = rq.getAuthenticatedActor();
+	public RsData<PostWithContnetDto> write(@RequestBody @Valid WriteReqBody body) {
+		Member actor = rq.getActor();
 
 		Post post = postService.write(actor, body.title(), body.content(), body.published(), body.listed());
 
