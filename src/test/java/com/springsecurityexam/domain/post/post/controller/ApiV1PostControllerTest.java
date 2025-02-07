@@ -254,7 +254,7 @@ class ApiV1PostControllerTest {
 
 		@Test
 		@DisplayName("성공 - 글을 작성할 수 있다")
-		@WithUserDetails("user") // Spring Security에 사용되는 user를 적용시킬 수 있다
+		@WithUserDetails("user1") // UserDetailsService 인터페이스를 구현해 시큐리티는 우리가 구현한 Member의 user1을 인식할 수 있다
 		void writeA() throws Exception {
 			var apiKey = "user1";
 			var title = "새로운 글 제목";
