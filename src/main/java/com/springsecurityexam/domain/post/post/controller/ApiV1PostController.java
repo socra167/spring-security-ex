@@ -4,7 +4,9 @@ import java.security.Principal;
 import java.security.Provider;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,13 +79,17 @@ public class ApiV1PostController {
 
 	@PostMapping
 	@Transactional
-	public RsData<PostWithContnetDto> write(@RequestBody @Valid WriteReqBody body) {
-		Principal principal = SecurityContextHolder.getContext().getAuthentication(); // principal로 username을 얻을 수 있다
-
+	public RsData<PostWithContnetDto> write(
+		@RequestBody @Valid WriteReqBody body,
+		@AuthenticationPrincipal UserDetails principal
+	) {
+		// Principal principal = SecurityContextHolder.getContext().getAuthentication(); // principal로 username을 얻을 수 있다
 		if (principal == null) {
 			throw new ServiceException("401-1", "로그인이 필요합니다.");
 		}
-		String username = principal.getName();
+
+		// String username = principal.getName();
+		String username = principal.getUsername();
 		Member actor = memberService.findByUsername(username).get();
 
 		// Member actor = rq.getAuthenticatedActor();
