@@ -32,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 public class ApiV1PostController {
 	private final PostService postService;
 	private final Rq rq;
-	private final MemberService memberService;
 
 	@GetMapping
 	@Transactional(readOnly = true)
@@ -57,7 +56,7 @@ public class ApiV1PostController {
 			.orElseThrow(() -> new ServiceException("404-1", "존재하지 않는 글입니다."));
 
 		if (!post.isPublished()) {
-			Member actor = rq.getAuthenticatedActor();
+			Member actor = rq.getActor();
 			post.canRead(actor);
 		}
 
@@ -88,7 +87,7 @@ public class ApiV1PostController {
 	@PutMapping("{id}")
 	@Transactional
 	public RsData<PostWithContnetDto> modify(@PathVariable long id, @RequestBody @Valid WriteReqBody body) {
-		Member actor = rq.getAuthenticatedActor();
+		Member actor = rq.getActor();
 		Post post = postService.getItem(id)
 			.orElseThrow(() -> new ServiceException("404-1", "존재하지 않는 글입니다."));
 
@@ -106,7 +105,7 @@ public class ApiV1PostController {
 	@DeleteMapping("{id}")
 	@Transactional
 	public RsData<Void> delete(@PathVariable long id) {
-		Member actor = rq.getAuthenticatedActor();
+		Member actor = rq.getActor();
 		Post post = postService.getItem(id).get();
 
 		post.canDelete(actor);
@@ -127,7 +126,7 @@ public class ApiV1PostController {
 		@RequestParam(defaultValue = "title") String keywordType,
 		@RequestParam(defaultValue = "") String keyword
 	) {
-		Member actor = rq.getAuthenticatedActor();
+		Member actor = rq.getActor();
 		Page<Post> postPage = postService.getMines(page, pageSize, actor, keywordType, keyword);
 
 		return new RsData<>(
