@@ -1,6 +1,10 @@
 package com.springsecurityexam.domain.post.post.controller;
 
+import java.security.Principal;
+import java.security.Provider;
+
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springsecurityexam.domain.member.member.entity.Member;
+import com.springsecurityexam.domain.member.member.service.MemberService;
 import com.springsecurityexam.domain.post.post.dto.PageDto;
 import com.springsecurityexam.domain.post.post.dto.PostWithContnetDto;
 import com.springsecurityexam.domain.post.post.entity.Post;
@@ -31,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class ApiV1PostController {
 	private final PostService postService;
 	private final Rq rq;
+	private final MemberService memberService;
 
 	@GetMapping
 	@Transactional(readOnly = true)
@@ -72,7 +78,15 @@ public class ApiV1PostController {
 	@PostMapping
 	@Transactional
 	public RsData<PostWithContnetDto> write(@RequestBody @Valid WriteReqBody body) {
-		Member actor = rq.getAuthenticatedActor();
+		Principal principal = SecurityContextHolder.getContext().getAuthentication(); // principal로 username을 얻을 수 있다
+
+		if (principal == null) {
+			throw new ServiceException("401-1", "로그인이 필요합니다.");
+		}
+		String username = principal.getName();
+		Member actor = memberService.findByUsername(username).get();
+
+		// Member actor = rq.getAuthenticatedActor();
 
 		Post post = postService.write(actor, body.title(), body.content(), body.published(), body.listed());
 
