@@ -1,7 +1,12 @@
 package com.springsecurityexam.global;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -33,5 +38,16 @@ public class Rq {
 
         return opActor.get();
 
+    }
+
+	public void setLogin(String username) {
+        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // 인증 정보 저장소
+        // security는 인증된 사람이 여기 들어 있다고 생각하고 사용한다
+        UserDetails user = new User(username, "", List.of());
+
+        // 인증 정보를 수동으로 등록
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+        );
     }
 }

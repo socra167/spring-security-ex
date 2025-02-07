@@ -254,9 +254,9 @@ class ApiV1PostControllerTest {
 
 		@Test
 		@DisplayName("성공 - 글을 작성할 수 있다")
-		@WithUserDetails("user3") // UserDetailsService 인터페이스를 구현해 시큐리티는 우리가 구현한 Member의 user1을 인식할 수 있다
+		@WithUserDetails("user2") // UserDetailsService 인터페이스를 구현해 시큐리티는 우리가 구현한 Member의 user를 인식할 수 있다
 		void writeA() throws Exception {
-			var apiKey = "user1";
+			var apiKey = "user3";
 			var title = "새로운 글 제목";
 			var content = "새로운 글 내용";
 			var resultActions = writeRequest(apiKey, title, content);
