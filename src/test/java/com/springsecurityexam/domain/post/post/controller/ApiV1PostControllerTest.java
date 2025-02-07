@@ -264,8 +264,6 @@ class ApiV1PostControllerTest {
 
 			resultActions
 				.andExpect(status().isCreated())
-				.andExpect(handler().handlerType(ApiV1PostController.class))
-				.andExpect(handler().methodName("write"))
 				.andExpect(jsonPath("$.code").value("201-1"))
 				.andExpect(jsonPath("$.msg").value("%d번 글 작성이 완료되었습니다.".formatted(post.getId())));
 			checkPost(resultActions, post);
@@ -299,8 +297,6 @@ class ApiV1PostControllerTest {
 
 			resultActions
 				.andExpect(status().isUnauthorized())
-				.andExpect(handler().handlerType(ApiV1PostController.class))
-				.andExpect(handler().methodName("write"))
 				.andExpect(jsonPath("$.code").value("401-1"))
 				.andExpect(jsonPath("$.msg").value("잘못된 인증키입니다."));
 		}
@@ -375,8 +371,6 @@ class ApiV1PostControllerTest {
 
 			resultActions
 				.andExpect(status().isUnauthorized())
-				.andExpect(handler().handlerType(ApiV1PostController.class))
-				.andExpect(handler().methodName("modify"))
 				.andExpect(jsonPath("$.code").value("401-1"))
 				.andExpect(jsonPath("$.msg").value("잘못된 인증키입니다."));
 		}

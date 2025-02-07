@@ -9,6 +9,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
+import com.springsecurityexam.global.dto.RsData;
+import com.springsecurityexam.standard.Ut;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -36,7 +39,21 @@ public class SecurityConfig {
 				.addHeaderWriter(new XFrameOptionsHeaderWriter(
 					XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
 			.csrf((csrf) -> csrf.disable())
-			.addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling(
+				exceptionHandling -> exceptionHandling
+					.authenticationEntryPoint(
+						(request, response, authException) -> {
+							response.setContentType("application/json;charset=UTF-8");
+							response.setStatus(401);
+							response.getWriter().write(
+								Ut.Json.toString(
+									new RsData<>("401-1", "잘못된 인증키입니다.")
+								)
+							);
+						}
+					)
+			);
 		return http.build();
 	}
 }
